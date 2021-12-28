@@ -1,21 +1,32 @@
 package shwxr7.engine;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class WeightedCoin {
-  public static List<Integer> flipACoinNTimes(int probability, int times) {
-    var sequence = new ArrayList<Integer>();
+  public static Optional<List<Integer>> flipACoinNTimes(int probability, int times) {
+    if (probability < 0 || probability > 100 || times < 0) {
+      return Optional.empty();
+    } else {
+      var sequence = IntStream.range(0, times)
+          .map(i -> flipACoin(probability).get())
+          .boxed()
+          .collect(Collectors.toList());
 
-    for (int i = 0; i < times; i++) {
-      sequence.add(flipACoin(probability));
+      return Optional.of(sequence);
     }
-
-    return sequence;
   }
 
-  public static Integer flipACoin(int probability) {
-    return new Random().nextInt(100) < probability ? 1 : 0;
+  public static Optional<Integer> flipACoin(int probability) {
+    if (probability < 0 || probability > 100) {
+      return Optional.empty();
+    } else {
+      var value = new Random().nextInt(100) < probability ? 1 : 0;
+
+      return Optional.of(value);
+    }
   }
 }
