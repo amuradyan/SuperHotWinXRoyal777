@@ -17,8 +17,3 @@ public class Probability {
     }
   }
 }
-
-class InnerProbability {
-  public static void main(String[] args) {
-  }
-}
