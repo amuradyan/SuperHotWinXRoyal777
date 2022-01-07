@@ -1,13 +1,24 @@
 package shwxr7.model;
 
+import java.util.Optional;
+
 public class Probability {
   public final int probability;
 
-  public Probability(int probability) {
+  private Probability(int probability) {
+    this.probability = probability;
+  }
+
+  public static Optional<Probability> of(int probability) {
     if (probability < 0 || probability > 100) {
-      throw new IllegalArgumentException("Probability must be between 0 and 100");
+      return Optional.empty();
     } else {
-      this.probability = probability;
+      return Optional.of(new Probability(probability));
     }
+  }
+}
+
+class InnerProbability {
+  public static void main(String[] args) {
   }
 }
