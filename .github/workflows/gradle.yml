@@ -11,7 +11,7 @@ on:
   push:
     branches: [ disks-and-rollers ]
   pull_request:
-    branches: [ disks-and-rollers ]
+    branches: [ master ]
 
 jobs:
   build:
