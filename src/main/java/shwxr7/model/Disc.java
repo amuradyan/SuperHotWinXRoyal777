@@ -17,7 +17,7 @@ public class Disc {
     public Config() {
     }
 
-    public Config withSegment(Element element, Optional<Probability> probability) {
+    public Config withSection(Element element, Optional<Probability> probability) {
       dirtyElementProbabilities.put(element, probability);
 
       return this;

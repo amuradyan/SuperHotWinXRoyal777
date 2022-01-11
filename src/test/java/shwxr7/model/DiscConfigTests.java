@@ -20,6 +20,20 @@ public class DiscConfigTests {
   private final Element A = new Element("A", 0);
 
   @Test
+  @DisplayName("Config should be invalid when the sum of all probabilities is less 100")
+  public void config_should_be_valid_when_the_sum_of_all_probabilities_is_not_100() {
+    var configMap = new HashMap<Element, Optional<Probability>>();
+
+    configMap.put(Q, Probability.of(40));
+    configMap.put(K, Probability.of(40));
+    configMap.put(A, Probability.of(10));
+
+    var isConfigValid = new Disc.Config().configIsValid(configMap);
+
+    assertFalse(isConfigValid);
+  }
+
+  @Test
   @DisplayName("Config should be invalid when it contains negative probabilities")
   public void sum_of_probabilities_of_all_sections_cant_be_greater_than_100() {
     var configMap = new HashMap<Element, Optional<Probability>>();
@@ -74,8 +88,8 @@ public class DiscConfigTests {
   }
 
   @Test
-  @DisplayName("Config should be valid when it contains valid probabilities")
-  public void config_should_be_valid_when_it_contains_valid_probabilities() {
+  @DisplayName("Config should be valid when the sum of all probabilities is 100")
+  public void config_should_be_valid_when_the_sum_of_all_probabilities_is_100() {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     configMap.put(Q, Probability.of(40));
