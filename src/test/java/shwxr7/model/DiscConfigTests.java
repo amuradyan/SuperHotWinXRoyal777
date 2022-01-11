@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -71,31 +72,18 @@ public class DiscConfigTests {
     assertFalse(isConfigValid);
   }
 
-  // NOTE: The method below tests for an important edge case, but is
-  // too memory intensive to be included in the test suite, since it
-  // fails on the GitHub actions.
-  // We were able to run the tests with maxed JVM memory options locally.
-  //
-  // P.S.
-  // My /amuradyan/ VS Code formatter messes up the commented method below, no
-  // idea why.
-  // ----------------------------------------------------------------------
-  // @Test
-  // @DisplayName("Config should be invalid when sum of probabilities is less than
-  // 0")
-  // public void
-  // config_should_be_invalid_when_sum_of_probabilities_is_less_than_0() {
-  // var configMap = new HashMap<Element, Optional<Probability>>();
-  //
-  // IntStream.range(0, Integer.MAX_VALUE / 100)
-  // .forEach(i -> configMap.put(new Element("Q", i), Probability.of(100)));
-  //
-  // configMap.put(K, Probability.of(100));
-  //
-  // var isConfigValid = new Disc.Config().configIsValid(configMap);
-  //
-  // assertFalse(isConfigValid);
-  // }
+  @Test
+  @DisplayName("Config should be invalid when sum of probabilities is less than 0")
+  public void config_should_be_invalid_when_sum_of_probabilities_is_less_than_0() {
+    var configMap = new HashMap<Element, Optional<Probability>>();
+
+    IntStream.range(0, Integer.MAX_VALUE / 100 + 1)
+        .forEach(i -> configMap.put(new Element("Q", i), Probability.of(100)));
+
+    var isConfigValid = new Disc.Config().configIsValid(configMap);
+
+    assertFalse(isConfigValid);
+  }
 
   @Test
   @DisplayName("Config should be valid when the sum of all probabilities is 100")
