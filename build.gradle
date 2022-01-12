@@ -22,4 +22,8 @@ test {
 	testLogging {
 		events "passed", "skipped", "failed"
 	}
+
+  minHeapSize = "500m" // initial heap size
+  maxHeapSize = "2500m" // maximum heap size
+  jvmArgs '-XX:MaxPermSize=256m' // mem argument for the test JVM
 }
