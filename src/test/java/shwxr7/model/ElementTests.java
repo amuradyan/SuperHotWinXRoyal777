@@ -25,8 +25,8 @@ public class ElementTests {
   }
 
   @Test
-  @DisplayName("One shuold be able to create an element with valid name and id")
-  public void one_should_be_able_to_create_an_element_with_valid_name_and_id() {
+  @DisplayName("One should be able to create an element with valid name")
+  public void one_should_be_able_to_create_an_element_with_valid_name() {
     var element = Element.of("Hydrogen");
 
     assertTrue(element.isPresent());
