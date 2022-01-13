@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DiscConfigTests {
 
-  private final Element _10 = new Element("10", 10);
-  private final Element J = new Element("J", 11);
-  private final Element Q = new Element("Q", 12);
-  private final Element K = new Element("K", 13);
-  private final Element A = new Element("A", 0);
+  private final Element _10 = Element.of("1").get();
+  private final Element J = Element.of("J").get();
+  private final Element Q = Element.of("Q").get();
+  private final Element K = Element.of("K").get();
+  private final Element A = Element.of("A").get();
 
   @Test
   @DisplayName("Config should be invalid when the sum of all probabilities is less 100")
@@ -78,7 +78,7 @@ public class DiscConfigTests {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     IntStream.range(0, Integer.MAX_VALUE / 100 + 1)
-        .forEach(i -> configMap.put(new Element("Q", i), Probability.of(100)));
+        .forEach(i -> configMap.put(Element.of("Q").get(), Probability.of(100)));
 
     var isConfigValid = new Disc.Config().configIsValid(configMap);
 
