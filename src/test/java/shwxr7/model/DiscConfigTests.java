@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DiscConfigTests {
 
-  private final Element _10 = Element.of("1").get();
+  private final Element _10 = Element.of("10").get();
   private final Element J = Element.of("J").get();
   private final Element Q = Element.of("Q").get();
   private final Element K = Element.of("K").get();
