@@ -10,6 +10,10 @@ public class Section {
   }
 
   public static Optional<Section> with(Element e) {
-    return e == null ? Optional.empty() : Optional.of(new Section(e));
+    if (e == null) {
+      return Optional.empty();
+    } else {
+      return Optional.of(new Section(e));
+    }
   }
 }

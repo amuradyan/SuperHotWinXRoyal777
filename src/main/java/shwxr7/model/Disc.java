@@ -11,6 +11,22 @@ public class Disc {
     this.config = config;
   }
 
+  public Section roll() {
+    return null;
+  }
+
+  // Given:
+  // - we start at 0 inclusive
+  // - we end at 100 inclusive
+
+  // [] -> ()
+  // [0, 0, 0] -> ()
+  // [3] -> (0, 3)
+  // [0, 3] -> (0, 3)
+  // [3, 8] -> [(0, 3), (4, 11)]
+  // [3, 3, 4] -> [(0, 3), (4, 7), (8, 12)]
+  // [3, 3, 4, 8] -> [(0, 3), (4, 7), (8, 12), (13, 20)]
+
   public static final class Config {
     private final Map<Element, Optional<Probability>> dirtyElementProbabilities = new HashMap<>();
 
