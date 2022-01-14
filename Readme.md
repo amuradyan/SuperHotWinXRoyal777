@@ -10,6 +10,8 @@ This is a [slot machine](https://en.wikipedia.org/wiki/Slot_machine) engine in J
 
 ## NOTES
 
+### Credits
+
 For me /amuradyan/ the project was heavily inspired by slots 
 [Pirate 2](https://free-slots.games/igrosoft/pirate-2/) and 
 [Fruit Cocktail](https://neonslots.com/games/slots/fruit-cocktail-igrosoft).
