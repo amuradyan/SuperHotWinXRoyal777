@@ -17,7 +17,7 @@ public class Disc {
 
   // Given:
   // - we start at 0 inclusive
-  // - we end at 100 inclusive
+  // - we end at 100 exclusive
 
   // [] -> ()
   // [0, 0, 0] -> ()
