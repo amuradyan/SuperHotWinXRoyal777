@@ -14,6 +14,10 @@ public class Range {
     this.end = end;
   }
 
+  int size() {
+    return end - start + 1;
+  }
+
   public static Optional<Range> of(int length) {
     return length < 1 ? Optional.empty() : Optional.of(new Range(0, length - 1));
   }
@@ -26,14 +30,26 @@ public class Range {
     List<Range> ranges = new ArrayList<Range>();
     var acc = 0;
 
-    for (Integer length : lengths) {
-      if (length != 0) {
-        ranges.add(new Range(acc, acc + length - 1));
-        acc += length;
+    if (lengths != null && validateLengths(lengths)) {
+      for (Integer length : lengths) {
+        if (length != 0) {
+          ranges.add(new Range(acc, acc + length - 1));
+          acc += length;
+        }
       }
     }
 
     return ranges;
+  }
+
+  static Boolean validateLengths(List<Integer> lengths) {
+    if (!lengths.isEmpty() &&
+        lengths.stream().noneMatch(l -> l == null || l < 0)) {
+      return true;
+    } else {
+      return false;
+    }
+
   }
 
   public Boolean contains(int value) {

@@ -3,8 +3,8 @@ package shwxr7.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,10 +42,19 @@ public class RangeTests {
   }
 
   @Test
-  @DisplayName("A range starting and ending at the same value contains that value")
-  public void a_range_starting_and_ending_at_the_same_value_contains_that_value() {
-    var range = Range.between(6, 6).get();
-    assertTrue(range.contains(6));
+  @DisplayName("Range from 5 to 5 should be of size one")
+  public void range_from_5_to_5_should_be_of_size_one() {
+    var range = Range.between(5, 5).get();
+
+    assertEquals(range.size(), 1);
+  }
+
+  @Test
+  @DisplayName("Range from 5 to 6 should be of size two")
+  public void range_from_5_to_6_should_be_of_size_two() {
+    var range = Range.between(5, 6).get();
+
+    assertEquals(range.size(), 2);
   }
 
   @Test
@@ -53,20 +62,19 @@ public class RangeTests {
   public void range_cannot_start_and_end_at_the_same_value() {
     var range = Range.between(6, 6).get();
 
-    IntStream.range(-100, 100)
-        .filter(i -> i != 6)
-        .forEach(action -> assertFalse(range.contains(action)));
+    assertTrue(range.contains(6));
+    assertTrue(range.size() == 1);
   }
 
   @Test
-  @DisplayName("Range start can't be grater than the end")
-  public void range_start_can_t_be_grater_than_the_end() {
+  @DisplayName("Range start can't be greater than the end")
+  public void range_start_can_t_be_greater_than_the_end() {
     assertTrue(Range.between(6, 4).isEmpty());
   }
 
   @Test
-  @DisplayName("No range sequences can be created from '0' length ranges")
-  public void no_ranges_can_be_created_from_a_0_marker() {
+  @DisplayName("Range sequence can not be created from '0' length segment")
+  public void range_sequence_can_not_be_created_from_0_length_segment() {
     var range1 = Range.getRanges(List.of(0));
     var range2 = Range.getRanges(List.of(0, 0, 0));
 
@@ -75,8 +83,8 @@ public class RangeTests {
   }
 
   @Test
-  @DisplayName("Any 0 markers should be ignored")
-  public void any_0_markers_should_be_ignored() {
+  @DisplayName("Any 0 length segments should be ignored")
+  public void any_0_length_segments_should_be_ignored() {
     var range1 = Range.getRanges(List.of(0, 3, 8));
     var range2 = Range.getRanges(List.of(3, 0, 8));
     var range3 = Range.getRanges(List.of(3, 8, 0));
@@ -88,7 +96,66 @@ public class RangeTests {
     assertArrayEquals(range.toArray(), range3.toArray());
   }
 
-  // Get ranges should return an empty list if the list contains negative numbers
+  @Test
+  @DisplayName("An illegal list of lengths cannot produce a list of ranges")
+  public void an_illegal_list_of_lengths_cannot_produce_a_list_of_ranges() {
+    var illegalLengths = new ArrayList<Integer>() {
+      {
+        add(1);
+        add(-2);
+        add(3);
+        add(null);
+      }
+    };
+
+    var range = Range.getRanges(illegalLengths);
+
+    assertTrue(range.isEmpty());
+  }
+
+  @Test
+  @DisplayName("A `null` value makes the length list illegal")
+  public void a_null_value_makes_the_length_list_illegal() {
+    var illegalLengths = new ArrayList<Integer>() {
+      {
+        add(1);
+        add(3);
+        add(null);
+      }
+    };
+
+    assertFalse(Range.validateLengths(illegalLengths));
+  }  
+  
+  @Test
+  @DisplayName("An empty list of length is illegal")
+  public void an_empty_list_of_length_is_illegal() {
+    var illegalLengths = new ArrayList<Integer>() ;
+
+    assertFalse(Range.validateLengths(illegalLengths));
+  }
+
+  @Test
+  @DisplayName("A negative length makes the whole list illegal")
+  public void a_negative_length_makes_the_whole_list_illegal() {
+    var illegalLengths = new ArrayList<Integer>() {
+      {
+        add(1);
+        add(-2);
+        add(3);
+      }
+    };
+
+    assertFalse(Range.validateLengths(illegalLengths));
+  }
+
+  @Test
+  @DisplayName("A missing list of lengths can not produce a list of ranges")
+  public void a_missing_list_of_lengths_can_not_produce_a_list_of_ranges() {
+    var range = Range.getRanges(null);
+
+    assertTrue(range.isEmpty());
+  }
 
   @Test
   @DisplayName("Consecutive ranges have no gaps")
@@ -104,8 +171,8 @@ public class RangeTests {
   }
 
   @Test
-  @DisplayName("Ranges are inclusive on both ends")
-  public void ranges_are_inclusive_on_both_ends() {
+  @DisplayName("Ranges are inclusive on both sides")
+  public void ranges_are_inclusive_on_both_sides() {
     var range = Range.between(3, 8).get();
 
     assertTrue(range.contains(3));
