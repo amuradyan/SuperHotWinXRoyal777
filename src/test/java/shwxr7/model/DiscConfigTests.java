@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 
@@ -20,8 +21,8 @@ public class DiscConfigTests {
   private final Element A = Element.of("A").get();
 
   @Test
-  @DisplayName("Config should be invalid when the sum of all probabilities is less 100")
-  public void config_should_be_valid_when_the_sum_of_all_probabilities_is_not_100() {
+  @DisplayName("Config should be invalid when the sum of all probabilities is less than 100")
+  public void config_should_be_valid_when_the_sum_of_all_probabilities_is_less_than_100() {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     configMap.put(Q, Probability.of(40));
@@ -156,5 +157,62 @@ public class DiscConfigTests {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     assertEquals(new Disc.Config().sumOfAllProbabilities(configMap), 0);
+  }
+
+  @Test
+  @DisplayName("Missing config can't produce ranges")
+  public void missing_config_cant_produce_ranges() {
+    var ranges = new Disc.Config().toSectionRanges(null);
+
+    assertTrue(ranges.isEmpty());
+  }
+
+  @Test
+  @DisplayName("Empty config can't produce section ranges")
+  public void empty_config_cant_produce_section_ranges() {
+    var ranges = new Disc.Config().toSectionRanges(Map.of());
+
+    assertTrue(ranges.isEmpty());
+  }
+
+  @Test
+  @DisplayName("One element with probability of 100% should result in a range with cardinality of 100")
+  public void one_element_with_probability_of_100_percent_should_result_in_a_range_with_cardinality_of_100() {
+    var configMap = new HashMap<Element, Optional<Probability>>();
+
+    configMap.put(K, Probability.of(100));
+
+    var ranges = new Disc.Config().toSectionRanges(configMap);
+
+    assertEquals(1, ranges.size());
+    assertEquals(100, ranges.get(K).size());
+  }
+
+  @Test
+  @DisplayName("Two elements with 50 percent chance, should produce two ranges of length 50")
+  public void two_elements_with_50_percent_chance_should_produce_two_ranges_of_length_50() {
+    var configMap = new HashMap<Element, Optional<Probability>>();
+
+    configMap.put(Q, Probability.of(50));
+    configMap.put(K, Probability.of(50));
+
+    var ranges = new Disc.Config().toSectionRanges(configMap);
+
+    assertEquals(2, ranges.size());
+    ranges.forEach((l, range) -> assertEquals(50, range.size()));
+  }
+
+  @Test
+  @DisplayName("Section ranges should ignore zero probabilites sections")
+  public void section_ranges_should_ignore_zero_probabilites_sections() {
+    var configMap = new HashMap<Element, Optional<Probability>>();
+
+    configMap.put(Q, Probability.of(100));
+    configMap.put(K, Probability.of(0));
+    configMap.put(J, Probability.of(0));
+
+    var ranges = new Disc.Config().toSectionRanges(configMap);
+
+    assertEquals(1, ranges.size());
   }
 }

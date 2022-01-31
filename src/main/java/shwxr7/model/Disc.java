@@ -3,12 +3,28 @@ package shwxr7.model;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 
 public class Disc {
-  private final Config config;
+  private final Map<Element, Range> sectionRanges = new HashMap<>();
 
-  private Disc(Config config) {
-    this.config = config;
+  private Disc(Map<Element, Range> sectionRanges) {
+    if (sectionRanges != null) {
+      this.sectionRanges.putAll(sectionRanges);
+    }
+  }
+
+  public Section roll() {
+    var value = new Random().nextInt(100);
+
+    var section = sectionRanges.entrySet().stream()
+        .filter(e -> {
+          return value >= e.getValue().start && value <= e.getValue().end;
+        })
+        .findAny()
+        .get();
+
+    return Section.with(section.getKey()).get();
   }
 
   public static final class Config {
@@ -25,10 +41,33 @@ public class Disc {
 
     public Optional<Disc> build() {
       if (configIsValid(dirtyElementProbabilities)) {
-        return Optional.of(new Disc(this));
+        var sectionRanges = toSectionRanges(dirtyElementProbabilities);
+
+        return Optional.of(new Disc(sectionRanges));
       } else {
         return Optional.empty();
       }
+    }
+
+    Map<Element, Range> toSectionRanges(Map<Element, Optional<Probability>> dirtyElementProbabilities) {
+      var sectionRanges = new HashMap<Element, Range>();
+
+      if (dirtyElementProbabilities != null) {
+        var acc = 0;
+
+        for (var dep : dirtyElementProbabilities.entrySet()) {
+          var probability = dep.getValue().get().probability;
+
+          if (probability > 0) {
+            var range = Range.of(probability).get();
+
+            sectionRanges.put(dep.getKey(), range.shift(acc));
+            acc += probability;
+          }
+        }
+      }
+
+      return sectionRanges;
     }
 
     protected boolean configIsValid(Map<Element, Optional<Probability>> elementProbabilities) {
