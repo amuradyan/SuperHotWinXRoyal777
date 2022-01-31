@@ -125,12 +125,12 @@ public class RangeTests {
     };
 
     assertFalse(Range.validateLengths(illegalLengths));
-  }  
-  
+  }
+
   @Test
   @DisplayName("An empty list of length is illegal")
   public void an_empty_list_of_length_is_illegal() {
-    var illegalLengths = new ArrayList<Integer>() ;
+    var illegalLengths = new ArrayList<Integer>();
 
     assertFalse(Range.validateLengths(illegalLengths));
   }
@@ -193,5 +193,55 @@ public class RangeTests {
     var range = Range.between(3, 8).get();
 
     assertFalse(range.contains(9));
+  }
+
+  @Test
+  @DisplayName("The size should not change after shifting")
+  public void the_size_should_not_change_after_shifting() {
+    var r = Range.between(3, 8).get();
+
+    var shifted = r.shift(5);
+
+    assertEquals(r.size(), shifted.size());
+  }
+
+  @Test
+  @DisplayName("If the shift size is 0, the range should remain the same")
+  public void if_the_shift_size_is_0_the_range_should_remain_the_same() {
+    var initialRange = Range.between(3, 8);
+
+    var shiftedRange = initialRange.map(r -> r.shift(0));
+
+    assertEquals(initialRange.get(), shiftedRange.get());
+  }
+
+  @Test
+  @DisplayName("The end of shifted range should be greater than the start")
+  public void the_end_of_shifted_range_should_be_greater_than_the_start() {
+    var shiftedRange = Range.between(3, 8)
+        .map(r -> r.shift(5))
+        .get();
+
+    assertTrue(shiftedRange.end > shiftedRange.start);
+  }
+
+  @Test
+  @DisplayName("If the shift is positive, new `start` and `end` should be greater than old `start` and `end`")
+  public void if_the_shift_is_positive_new_start_and_end_should_be_greater_than_old_start_and_end() {
+    var r = Range.between(3, 8).get();
+
+    var shifted = r.shift(5);
+
+    assertTrue(shifted.end > r.end && shifted.start > r.start);
+  }
+
+  @Test
+  @DisplayName("If the shift is negative, new `start` and `end` should be less than old `start` and `end`")
+  public void if_the_shift_is_negative_new_start_and_end_should_be_less_than_old_start_and_end() {
+    var r = Range.between(3, 8).get();
+
+    var shifted = r.shift(-5);
+
+    assertTrue(shifted.end < r.end && shifted.start < r.start);
   }
 }

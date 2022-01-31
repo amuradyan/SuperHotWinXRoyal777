@@ -73,4 +73,8 @@ public class Range {
   public int hashCode() {
     return Objects.hash(start, end);
   }
+
+  public Range shift(int shift) {
+    return new Range(start + shift, end + shift);
+  }
 }
