@@ -30,9 +30,6 @@ public class Disc {
   public static final class Config {
     private final Map<Element, Optional<Probability>> dirtyElementProbabilities = new HashMap<>();
 
-    public Config() {
-    }
-
     public Config withSection(Element element, Optional<Probability> probability) {
       dirtyElementProbabilities.put(element, probability);
 
@@ -70,20 +67,18 @@ public class Disc {
       return sectionRanges;
     }
 
-    protected boolean configIsValid(Map<Element, Optional<Probability>> elementProbabilities) {
+    boolean configIsValid(Map<Element, Optional<Probability>> elementProbabilities) {
       return sumOfAllProbabilities(elementProbabilities) == 100 && !containsBadProbabilities(elementProbabilities);
     }
 
-    protected boolean containsBadProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
+    boolean containsBadProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
       return elementProbabilities.values().contains(Optional.empty());
     }
 
-    protected Integer sumOfAllProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
-      var sumOfProbabilities = elementProbabilities.values().stream()
+    Integer sumOfAllProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
+      return elementProbabilities.values().stream()
           .map(p -> p.isPresent() ? p.get().probability : 0)
           .reduce(0, (a, b) -> a + b);
-
-      return sumOfProbabilities;
     }
   }
 }
