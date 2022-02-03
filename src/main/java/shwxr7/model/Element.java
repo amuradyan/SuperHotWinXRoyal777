@@ -2,7 +2,7 @@ package shwxr7.model;
 
 import java.util.Optional;
 
-public class Element {
+public final class Element {
   public final String name;
   private final long id;
 

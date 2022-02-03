@@ -2,7 +2,7 @@ package shwxr7.model;
 
 import java.util.Optional;
 
-public class Probability {
+public final class Probability {
   public final int probability;
 
   private Probability(int probability) {

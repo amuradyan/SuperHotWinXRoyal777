@@ -2,7 +2,7 @@ package shwxr7.model;
 
 import java.util.Optional;
 
-public class Section {
+public final class Section {
   public final Element element;
 
   private Section(Element element) {
