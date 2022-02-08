@@ -6,7 +6,10 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public class WeightedCoin {
+public final class WeightedCoin {
+  private WeightedCoin() {
+  }
+
   public static Optional<List<Integer>> flipACoinNTimes(int probability, int times) {
     if (probability < 0 || probability > 100 || times < 0) {
       return Optional.empty();

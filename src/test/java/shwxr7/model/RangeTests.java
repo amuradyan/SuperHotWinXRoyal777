@@ -63,7 +63,7 @@ public class RangeTests {
     var range = Range.between(6, 6).get();
 
     assertTrue(range.contains(6));
-    assertTrue(range.size() == 1);
+    assertEquals(range.size(), 1);
   }
 
   @Test
@@ -101,9 +101,9 @@ public class RangeTests {
   public void an_illegal_list_of_lengths_cannot_produce_a_list_of_ranges() {
     var illegalLengths = new ArrayList<Integer>() {
       {
-        add(1);
-        add(-2);
+        add(-1);
         add(3);
+        add(8);
         add(null);
       }
     };
@@ -118,8 +118,8 @@ public class RangeTests {
   public void a_null_value_makes_the_length_list_illegal() {
     var illegalLengths = new ArrayList<Integer>() {
       {
-        add(1);
         add(3);
+        add(8);
         add(null);
       }
     };
@@ -138,13 +138,7 @@ public class RangeTests {
   @Test
   @DisplayName("A negative length makes the whole list illegal")
   public void a_negative_length_makes_the_whole_list_illegal() {
-    var illegalLengths = new ArrayList<Integer>() {
-      {
-        add(1);
-        add(-2);
-        add(3);
-      }
-    };
+    var illegalLengths = List.of(-1, 3, 8);
 
     assertFalse(Range.validateLengths(illegalLengths));
   }

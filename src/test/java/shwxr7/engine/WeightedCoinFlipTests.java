@@ -3,6 +3,7 @@ package shwxr7.engine;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WeightedCoinFlipTests {
@@ -117,7 +118,7 @@ public class WeightedCoinFlipTests {
     var outcome = WeightedCoin.flipACoin(0);
 
     assertTrue(outcome.isPresent());
-    assertTrue(outcome.get() == 0);
+    assertEquals(outcome.get(), 0);
   }
 
   @Test
@@ -126,6 +127,6 @@ public class WeightedCoinFlipTests {
     var outcome = WeightedCoin.flipACoin(100);
 
     assertTrue(outcome.isPresent());
-    assertTrue(outcome.get() == 1);
+    assertEquals(outcome.get(), 1);
   }
 }
