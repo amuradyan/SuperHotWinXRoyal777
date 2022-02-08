@@ -99,8 +99,14 @@ public class RangeTests {
   @Test
   @DisplayName("An illegal list of lengths cannot produce a list of ranges")
   public void an_illegal_list_of_lengths_cannot_produce_a_list_of_ranges() {
-    var illegalLengths = List.of(-1, 3, 8);
-    illegalLengths.add(null);
+    var illegalLengths = new ArrayList<Integer>() {
+      {
+        add(-1);
+        add(3);
+        add(8);
+        add(null);
+      }
+    };
 
     var range = Range.getRanges(illegalLengths);
 
@@ -110,8 +116,13 @@ public class RangeTests {
   @Test
   @DisplayName("A `null` value makes the length list illegal")
   public void a_null_value_makes_the_length_list_illegal() {
-    var illegalLengths = List.of(3, 8);
-    illegalLengths.add(null);
+    var illegalLengths = new ArrayList<Integer>() {
+      {
+        add(3);
+        add(8);
+        add(null);
+      }
+    };
 
     assertFalse(Range.validateLengths(illegalLengths));
   }
