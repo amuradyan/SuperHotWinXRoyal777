@@ -141,8 +141,8 @@ public class DiscConfigTests {
   }
 
   @Test
-  @DisplayName("Sum of two 30% precents should be 60%")
-  public void sum_of_two_30_percent_precents_should_be_60_percent() {
+  @DisplayName("Sum of two 30% percents should be 60%")
+  public void sum_of_two_30_percent_percents_should_be_60_percent() {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     configMap.put(Q, Probability.of(30));
@@ -203,8 +203,8 @@ public class DiscConfigTests {
   }
 
   @Test
-  @DisplayName("Section ranges should ignore zero probabilites sections")
-  public void section_ranges_should_ignore_zero_probabilites_sections() {
+  @DisplayName("Section ranges should ignore zero probabilities sections")
+  public void section_ranges_should_ignore_zero_probabilities_sections() {
     var configMap = new HashMap<Element, Optional<Probability>>();
 
     configMap.put(Q, Probability.of(100));

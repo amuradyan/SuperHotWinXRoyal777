@@ -25,7 +25,7 @@ public class ProbabilityTests {
 
   @Test
   @DisplayName("The probability must be between 0 and 100")
-  public void probability_must_be_between_zero_and_hundreed() {
+  public void probability_must_be_between_zero_and_hundred() {
     var optionalProbability = Probability.of(50);
 
     assertTrue(optionalProbability.isPresent());
