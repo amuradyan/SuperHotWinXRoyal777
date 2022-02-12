@@ -3,13 +3,9 @@ package shwxr7.model;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DiscConfigTests {
@@ -23,87 +19,88 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Config should be invalid when the sum of all probabilities is less than 100")
   public void config_should_be_valid_when_the_sum_of_all_probabilities_is_less_than_100() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(40));
     configMap.put(K, Probability.of(40));
     configMap.put(A, Probability.of(10));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertFalse(isConfigValid);
+    assertTrue(validatedConfig.isEmpty());
   }
 
   @Test
   @DisplayName("Config should be invalid when it contains negative probabilities")
   public void sum_of_probabilities_of_all_sections_cant_be_greater_than_100() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(-60));
     configMap.put(K, Probability.of(80));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertFalse(isConfigValid);
+    assertTrue(validatedConfig.isEmpty());
   }
 
   @Test
   @DisplayName("Config should be invalid when it contains over 100% probabilities")
   public void config_should_be_invalid_when_it_contains_over_100_probabilities() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(40));
     configMap.put(K, Probability.of(150));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertFalse(isConfigValid);
+    assertTrue(validatedConfig.isEmpty());
   }
 
   @Test
   @DisplayName("Config should be invalid when sum of probabilities is greater than 100")
   public void config_should_be_invalid_when_sum_of_probabilities_is_greater_than_100() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(40));
     configMap.put(K, Probability.of(70));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertFalse(isConfigValid);
+    assertTrue(validatedConfig.isEmpty());
   }
 
   @Test
   @DisplayName("Config should be invalid when sum of probabilities is less than 0")
   public void config_should_be_invalid_when_sum_of_probabilities_is_less_than_0() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     IntStream.range(0, Integer.MAX_VALUE / 100 + 1)
         .forEach(i -> configMap.put(Element.of("Q").get(), Probability.of(100)));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertFalse(isConfigValid);
+    assertTrue(validatedConfig.isEmpty());
   }
 
   @Test
   @DisplayName("Config should be valid when the sum of all probabilities is 100")
   public void config_should_be_valid_when_the_sum_of_all_probabilities_is_100() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(40));
     configMap.put(K, Probability.of(40));
     configMap.put(A, Probability.of(20));
 
-    var isConfigValid = new Disc.Config().configIsValid(configMap);
+    var validatedConfig = new Disc.Config().configIsValid(configMap);
 
-    assertTrue(isConfigValid);
+    assertTrue(validatedConfig.isPresent());
+    assertEquals(configMap, validatedConfig.get());
   }
 
   @Test
   @DisplayName("Negative probabilities should not contribute to the sum")
   public void negative_probabilities_should_not_contribute_to_the_sum() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(-30));
     configMap.put(K, Probability.of(30));
@@ -117,7 +114,7 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Over 100% probabilities should not contribute to the sum")
   public void over_100_probabilities_should_not_contribute_to_the_sum() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(150));
     configMap.put(K, Probability.of(30));
@@ -131,7 +128,7 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Sum of only bad probabilities should be 0")
   public void sum_of_only_bad_probabilities_should_be_0() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(-30));
     configMap.put(K, Probability.of(-80));
@@ -143,7 +140,7 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Sum of two 30% percents should be 60%")
   public void sum_of_two_30_percent_percents_should_be_60_percent() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(30));
     configMap.put(K, Probability.of(30));
@@ -154,7 +151,7 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Sum of no probabilities should be 0")
   public void sum_of_empty_should_be_0() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     assertEquals(new Disc.Config().sumOfAllProbabilities(configMap), 0);
   }
@@ -170,7 +167,7 @@ public class DiscConfigTests {
   @Test
   @DisplayName("Empty config can't produce section ranges")
   public void empty_config_cant_produce_section_ranges() {
-    var ranges = new Disc.Config().toSectionRanges(Map.of());
+    var ranges = new Disc.Config().toSectionRanges(new Disc.Config.DirtyConfig());
 
     assertTrue(ranges.isEmpty());
   }
@@ -178,34 +175,34 @@ public class DiscConfigTests {
   @Test
   @DisplayName("One element with probability of 100% should result in a range with cardinality of 100")
   public void one_element_with_probability_of_100_percent_should_result_in_a_range_with_cardinality_of_100() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(K, Probability.of(100));
 
     var ranges = new Disc.Config().toSectionRanges(configMap);
 
-    assertEquals(1, ranges.size());
-    assertEquals(100, ranges.get(K).size());
+    assertEquals(1, ranges.get().size());
+    assertEquals(100, ranges.get().get(K).size());
   }
 
   @Test
   @DisplayName("Two elements with 50 percent chance, should produce two ranges of length 50")
   public void two_elements_with_50_percent_chance_should_produce_two_ranges_of_length_50() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(50));
     configMap.put(K, Probability.of(50));
 
     var ranges = new Disc.Config().toSectionRanges(configMap);
 
-    assertEquals(2, ranges.size());
-    ranges.forEach((l, range) -> assertEquals(50, range.size()));
+    assertEquals(2, ranges.get().size());
+    ranges.get().forEach((l, range) -> assertEquals(50, range.size()));
   }
 
   @Test
   @DisplayName("Section ranges should ignore zero probabilities sections")
   public void section_ranges_should_ignore_zero_probabilities_sections() {
-    var configMap = new HashMap<Element, Optional<Probability>>();
+    var configMap = new Disc.Config.DirtyConfig();
 
     configMap.put(Q, Probability.of(100));
     configMap.put(K, Probability.of(0));
@@ -213,6 +210,6 @@ public class DiscConfigTests {
 
     var ranges = new Disc.Config().toSectionRanges(configMap);
 
-    assertEquals(1, ranges.size());
+    assertEquals(1, ranges.get().size());
   }
 }

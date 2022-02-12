@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 public class Disc {
   private final Map<Element, Range> sectionRanges = new HashMap<>();
@@ -28,7 +29,10 @@ public class Disc {
   }
 
   public static final class Config {
-    private final Map<Element, Optional<Probability>> dirtyElementProbabilities = new HashMap<>();
+    static class DirtyConfig extends HashMap<Element, Optional<Probability>> {
+    };
+
+    private final DirtyConfig dirtyElementProbabilities = new DirtyConfig();
 
     public Config withSection(Element element, Optional<Probability> probability) {
       dirtyElementProbabilities.put(element, probability);
@@ -37,45 +41,57 @@ public class Disc {
     }
 
     public Optional<Disc> build() {
-      if (configIsValid(dirtyElementProbabilities)) {
-        var sectionRanges = toSectionRanges(dirtyElementProbabilities);
-
-        return Optional.of(new Disc(sectionRanges));
-      } else {
-        return Optional.empty();
-      }
+      return configIsValid(dirtyElementProbabilities)
+          .flatMap(validatedConfig -> toSectionRanges(validatedConfig))
+          .map(ranges -> new Disc(ranges));
     }
 
-    Map<Element, Range> toSectionRanges(Map<Element, Optional<Probability>> dirtyElementProbabilities) {
+    Optional<Map<Element, Range>> toSectionRanges(DirtyConfig dirtyElementProbabilities) {
+      if (dirtyElementProbabilities == null || dirtyElementProbabilities.isEmpty()) {
+        return Optional.empty();
+      }
+
+      var positiveProbabilities = dirtyElementProbabilities.entrySet().stream()
+          .filter(e -> e.getValue().get().probability > 0)
+          .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+      var sectionRanges = getRanges(positiveProbabilities);
+
+      return Optional.of(sectionRanges);
+    }
+
+    private HashMap<Element, Range> getRanges(Map<Element, Optional<Probability>> positiveProbabilities) {
       var sectionRanges = new HashMap<Element, Range>();
+      var acc = 0;
 
-      if (dirtyElementProbabilities != null) {
-        var acc = 0;
+      for (var dep : positiveProbabilities.entrySet()) {
+        var probability = dep.getValue().get().probability;
+        var range = Range.of(probability).get();
 
-        for (var dep : dirtyElementProbabilities.entrySet()) {
-          var probability = dep.getValue().get().probability;
-
-          if (probability > 0) {
-            var range = Range.of(probability).get();
-
-            sectionRanges.put(dep.getKey(), range.shift(acc));
-            acc += probability;
-          }
-        }
+        sectionRanges.put(dep.getKey(), range.shift(acc));
+        acc += probability;
       }
 
       return sectionRanges;
     }
 
-    boolean configIsValid(Map<Element, Optional<Probability>> elementProbabilities) {
-      return sumOfAllProbabilities(elementProbabilities) == 100 && !containsBadProbabilities(elementProbabilities);
+    Optional<DirtyConfig> configIsValid(DirtyConfig elementProbabilities) {
+
+      var isConfigValid = sumOfAllProbabilities(elementProbabilities) == 100
+          && !containsBadProbabilities(elementProbabilities);
+
+      if (isConfigValid) {
+        return Optional.of(elementProbabilities);
+      } else {
+        return Optional.empty();
+      }
     }
 
-    boolean containsBadProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
+    boolean containsBadProbabilities(DirtyConfig elementProbabilities) {
       return elementProbabilities.values().contains(Optional.empty());
     }
 
-    Integer sumOfAllProbabilities(Map<Element, Optional<Probability>> elementProbabilities) {
+    Integer sumOfAllProbabilities(DirtyConfig elementProbabilities) {
       return elementProbabilities.values().stream()
           .map(p -> p.isPresent() ? p.get().probability : 0)
           .reduce(0, (a, b) -> a + b);
