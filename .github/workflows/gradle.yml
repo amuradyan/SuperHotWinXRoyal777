@@ -9,7 +9,7 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ disks-and-rollers ]
+    branches: [ disks-and-rollers , master]
   pull_request:
     branches: [ master ]
 
@@ -24,8 +24,16 @@ jobs:
       uses: actions/setup-java@v2
       with:
         java-version: '11'
-        distribution: 'adopt'
+        distribution: 'temurin'
     - name: Build with Gradle
       uses: gradle/gradle-build-action@4137be6a8bf7d7133955359dbd952c0ca73b1021
       with:
         arguments: clean build test
+   
+    - uses: actions/setup-java@v2
+      with:
+       java-version: '11'
+       distribution: 'temurin'
+    - uses: pmd/pmd-github-action@v1
+      with:
+       rulesets: ' custom_pmd_rules.xml'    
